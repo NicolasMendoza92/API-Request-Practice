@@ -16,6 +16,9 @@ export default function Noticias() {
     const [noticias, setNoticias] = useState([]);
     console.log(noticias)
 
+    // buena pracrica poner el enalce de consulta en una constante
+    const BASE_URL='https://newsapi.org/v2'
+
     // usamos este hook que es una funcion que controla cuando se disparan los efecto secundarios 
     // await palabra reservada usamos cuando tengamos una funcion asincronica (cuando se ejecute el codigo funciona sin depender de lo otro) - es decir se llama a la funcion, se ejecuta y cuando termine se ejecuta lo que esta despues del await   
 
@@ -24,7 +27,19 @@ export default function Noticias() {
             // manera facil de ejecutar algo sin necesidad de IF-y else, try y catch (jsx intenta resolver un bloque de codigo las veces que yo lo indique, en este caso si sale, entonces ejecutara "response" - y cuando ejecujete response va a ejecutar "new" y luego hago finaliza con setNoticias - si algo pasa ejecuta el "catch" y no me traba la ejecucion)
             try {
             // sintaxis para traer info de una API - solo cambia "articles" - aca puedo acceder a todas las prop y vbales que me tiene la API
-            const response = await axios.get(`https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&page=${page}&apiKey=22151cac8ef24f039026871a8cc0ee62`);
+
+             // existe la manera params, en vez de ponerla en todas las lineas una a la par de la otra. 
+            const config = {
+                params:{
+                    apiKey:'22151cac8ef24f039026871a8cc0ee62',
+                    country: country,
+                    category: category, 
+                    page: page,
+                },
+            }
+            // entonces aca llamamos a la vble const-- que dentro tiene su objeto "params"
+            const response = await axios.get(`${BASE_URL}/top-headlines`, config );
+           
             const news = response.data.articles;
             setNoticias(news)    
             } catch (error) {
