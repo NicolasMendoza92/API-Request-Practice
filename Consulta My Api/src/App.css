@@ -1,0 +1,6 @@
+/* para poner en el fondo al footer */
+.footer-fix{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
