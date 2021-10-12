@@ -1,10 +1,12 @@
 
 import {Button } from "react-bootstrap";
 
+
 const exampleImage = 'https://png.pngtree.com/png-vector/20190710/ourmid/pngtree-user-vector-avatar-png-image_1541962.jpg'
 
 
-export default function Perfil({ onChangeImg,user, setUser}) {
+export default function Perfil({ onChangeImg , user, setUser}) {
+
 
     const logOut = () => {
         setUser({});

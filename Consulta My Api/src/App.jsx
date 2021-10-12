@@ -55,7 +55,7 @@ function App() {
 
           {isAdmin && (
             <Route path="/perfil">
-              <Perfil user={user} />
+              <Perfil user={user} setUser={setUser} />
             </Route>
           )}
 

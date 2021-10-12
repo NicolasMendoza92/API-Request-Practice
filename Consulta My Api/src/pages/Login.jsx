@@ -1,10 +1,9 @@
 
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
-import { guardarEnLocalStorage } from '../utils/localStorage';
+import axios from 'axios'
 
-const user = { name: 'rick', email: 'rick@gmail.com', password: '123456', role: 'admin' };
+// const user = { name: 'rick', email: 'rick@gmail.com', password: '123456', role: 'admin' };
 
 // al tener el setUser, lo podemos desectructurar 
 export default function Login({ setUser }) {
@@ -13,7 +12,7 @@ export default function Login({ setUser }) {
     // aca debo elegir los parametros que va a tener la funcion y su estado incial es email y password vacios  
     const [input, setInput] = useState({ email: '', password: '' });
     // el useHistory, me sirve como un redirect, y luego lo invoco este estado con un history.push (y /"ruta que quiero")
-    const history = useHistory();
+    // const history = useHistory();
 
     const handleChange = (event) => {
         const { value, name } = event.target;
@@ -21,7 +20,7 @@ export default function Login({ setUser }) {
         setInput(newInput)
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         event.stopPropagation();
         setValidated(true);
@@ -30,23 +29,30 @@ export default function Login({ setUser }) {
 
         // cuando estan bien los datos, usamos el metodo push, entonces lo redirecciona de una a la pag admin. 
 
+        // consultar al Back a la ruta /login, con el usuario y contraseña 
+        // hacemos una consulta tipo "post" por que estamos enviando datos a traves de body  -- la consulta es en el localhost de postman - y enviamos un segundo parametro con un objeto y todos los datos que enviamos en el body (en este caso lo que tenga email y password, eso ya lo tenemos en el input). 
         if (form.checkValidity() === true) {
 
-            // colocamos la validacion ---> cuando se cumple la condicion de los dos valores que el usuario pone en el input entonces 
-            if (user.email === input.email && user.password === input.password) {
-                alert('Hola Admin' + user.name)
-                setUser(user);
-                guardarEnLocalStorage({ key: 'user', value: user });
-                history.push('/admin');
-            } else {
-                alert('datos incorrectos')
-                form.reset();
-                // seteamos el input con un campo vacio, entonces debemos agregar que el valor del input dependa del estado 
-                setInput({});
-            }
+            const response = await axios.post('http://localhost:4000/api/auth/login', input);
+            console.log (response)
+
+            // if () {
+            //     alert('Hola Admin' + user.name)
+
+
+
+            //     // setUser(user);
+            //     // guardarEnLocalStorage({ key: 'user', value: user });
+            //     history.push('/admin');
+            // } else {
+            //     alert('datos incorrectos')
+            //     form.reset();
+            //     // seteamos el input con un campo vacio, entonces debemos agregar que el valor del input dependa del estado 
+            //     setInput({});
+            // }
 
         }
-    }
+    };
 
     return (
         <Container>
