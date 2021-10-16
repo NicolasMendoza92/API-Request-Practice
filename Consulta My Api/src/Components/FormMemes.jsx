@@ -1,14 +1,15 @@
 
+import axios from 'axios';
 import { useState } from 'react';
-import { Button, Form, InputGroup, Row } from 'react-bootstrap';
-import { ID } from '../utils/id';
-import { guardarEnLocalStorage } from '../utils/localStorage';
+import { Button, Form, InputGroup, Row, Spinner } from 'react-bootstrap';
 
-export default function FormMemes(props) {
-    const { memes, setMemes } = props;
+
+export default function FormMemes(setMemes) {
     const [validated, setValidated] = useState(false);
     // ahora usamos estados para tomar la informacion del usuario -  antes lo usabamos con onChange
     const [input, setInput] = useState({ title: '', image: '' });
+    // este estado es muy usado para agregar spiners
+    const [isLoading, setIsLoading] = useState(false);
 
 
     // aca recibimos los datos del formulario (funcion para eso)
@@ -19,7 +20,7 @@ export default function FormMemes(props) {
         setInput(newInput)
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         event.stopPropagation();
         setValidated(true);
@@ -27,13 +28,17 @@ export default function FormMemes(props) {
         const form = event.currentTarget;
 
         if (form.checkValidity() === true) {
-            // agregamos al array que ya creamos propiedades y elementos nuevos, lo que antes haciamos con push. Aca creamos una vble para que cada vez que se cree un meme se le asigne un ID (el id es util para despues diferenciar y usar "find" o delete)
-            const newMeme = {...input, id:ID()};
-            // creamos un objeto con spread syntax que copia lo que tiene, osea el input que ponga y le sumo el ID unico 
-            const newArray = [...memes, newMeme];
-            setMemes(newArray);
-            // aca a la funcion le debo poner los objetos que quiero guardar, si yo pongo memes en vez de newArray me guarda el anterior
-            guardarEnLocalStorage({ key: 'memes', value: newArray });
+            // antes de hacer la consulta, se llama al setloading
+            setIsLoading(true);
+            // hacemos un post a la ruta y lo que necestiamos es el titulo y la imagen, que es lo que tenemos guardado en el input (lo que user pone ahi)
+            await axios.post(' http://localhost:4000/api/memes', input);
+
+            // aca tambien, a la hora de crear un meme con post, tambien consultamos con get y lo setea al estado. 
+            const response = await axios.get('http://localhost:4000/api/memes');
+            setMemes(response.data);
+
+            // cuando termine la consulta, se setea como al inicio
+            setIsLoading(false);
         }
     };
     return (
@@ -72,8 +77,14 @@ export default function FormMemes(props) {
                     </InputGroup>
                 </Form.Group>
                 <Row>
-                    <Button type="submit" className="mx-auto">
+                    <Button type="submit" className="mx-auto" disable={isLoading}>
                         Crear Meme
+                        {/* cuando hacemos el envio del meme, debe aparecer el spinner */}
+                        {isLoading && (
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        )}
                     </Button>
                 </Row>
             </Form>

@@ -13,6 +13,7 @@ export const NavbarRB = ({user}) => {
       <Nav className="me-auto">
         <Nav.Link as={NavLink} to="/" >Home</Nav.Link>
         <Nav.Link as={NavLink} to="/login" >Login</Nav.Link>
+        <Nav.Link as={NavLink} to="/register" >Registro</Nav.Link>
         {/* aca estoy haciendo la condicion, de que si se logea el usuario admin se muestren estas dos op de navegacion */}
         {user.role === 'admin' && <Nav.Link as={NavLink} to="/perfil" >Perfil</Nav.Link>}
         {/* cuando un usuario se logea, su prop role es igual a admin => se muestra el nav link admin */}

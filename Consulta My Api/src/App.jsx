@@ -9,22 +9,48 @@ import Memes from './pages/Memes';
 import Login from './pages/Login';
 import Perfil from './pages/Perfil';
 import Admin from './pages/Admin';
+import Register from './pages/Register';
 import { useState } from 'react';
 import { leerDeLocalStorage } from './utils/localStorage';
 import DetalleMeme from './pages/DetalleMeme';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 
-// siempre que necesitemos cambio en pantalla, necesitamos usar estados. UseState - y con setSection hacemos participe al ususario (funcion que actualiza)
+// ya los estados no vienen del local, sino que usamos useEffect, y hacemos logica con eso dentro de la app 
 
-// cuando arranque la app debe leer de local y mostrame esto, para que cuando actualice no desaparerza, le llamamos 'memes' por que al momento de guardarlo en local tambien le llamamos a la key 'memes'
-const memesLocal = leerDeLocalStorage('memes') || [];
-const userLocal = leerDeLocalStorage('user') || {};
+const tokenLocal = leerDeLocalStorage('token') || {};
 
 function App() {
 
-  const [memes, setMemes] = useState(memesLocal);
+  // dejamos a memes como un array vacio al inicio y cuando llega la consulta se va compeltando.
+  const [memes, setMemes] = useState([]);
+  // al principio es un objeto vacio y cuando va haciendo las consultas "get" va llenadose
+  const [user, setUser] = useState({});
 
-  const [user, setUser] = useState(userLocal);
+    // esto seria lo que reemplaza al localStorage de setUser
+  useEffect(() => {
+    // aca ponemos la condicion, de que solo se setee el usuario cuando haya token 
+    if (!tokenLocal.token) return;
+
+    const request = async () => {
+      // creamos la vble que guarde el token del user logeado, y lo traemos del localstorage lo definimos a la hora de guardar como token - luego lo enviamos como parametro asi como hicimos con las consulta a las api, asi como parametro (params)
+      const headers = { 'x-auth-token': tokenLocal.token };
+      const response = await axios.get('http://localhost:4000/api/auth', { headers });
+      setUser(response.data);
+    }
+    request();
+  })
+
+  // esto seria lo que reemplaza al localStorage de setMemes
+  useEffect(() => {
+    const request = async () => {
+      // accedemos a nuestra API y consultamos con los daatos que acaban de llegar s
+      const response = await axios.get('http://localhost:4000/api/memes');
+      setMemes(response.data);
+    };
+    request();
+  }, [])
 
   // definimos la vble condicion "isAdmin", para usarla luego
   const isAdmin = user.role === 'admin';
@@ -43,7 +69,11 @@ function App() {
           </Route>
           {/* ahora el componente de le damos la fn que actualice el estado y le damos el atributo "setUser" */}
           <Route path="/login">
-            <Login setUser={setUser} />
+            <Login />
+          </Route>
+
+          <Route path="/register">
+            <Register />
           </Route>
 
           {/* aca estamos condionando a la ruta, para que cuando el user logeado sea admin, aparezcan estas dos rutas de navegacion */}

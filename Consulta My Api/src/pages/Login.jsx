@@ -2,17 +2,17 @@
 import { useState } from 'react';
 import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
 import axios from 'axios'
-
-// const user = { name: 'rick', email: 'rick@gmail.com', password: '123456', role: 'admin' };
+import { guardarEnLocalStorage } from '../utils/localStorage';
+import { useHistory } from 'react-router';
 
 // al tener el setUser, lo podemos desectructurar 
-export default function Login({ setUser }) {
+export default function Login() {
 
     const [validated, setValidated] = useState(false);
     // aca debo elegir los parametros que va a tener la funcion y su estado incial es email y password vacios  
     const [input, setInput] = useState({ email: '', password: '' });
     // el useHistory, me sirve como un redirect, y luego lo invoco este estado con un history.push (y /"ruta que quiero")
-    // const history = useHistory();
+    const history = useHistory();
 
     const handleChange = (event) => {
         const { value, name } = event.target;
@@ -27,17 +27,29 @@ export default function Login({ setUser }) {
 
         const form = event.currentTarget;
 
-        // cuando estan bien los datos, usamos el metodo push, entonces lo redirecciona de una a la pag admin. 
-
         // consultar al Back a la ruta /login, con el usuario y contraseña 
         // hacemos una consulta tipo "post" por que estamos enviando datos a traves de body  -- la consulta es en el localhost de postman - y enviamos un segundo parametro con un objeto y todos los datos que enviamos en el body (en este caso lo que tenga email y password, eso ya lo tenemos en el input). 
         if (form.checkValidity() === true) {
+            try {
+                const response = await axios.post('http://localhost:4000/api/auth/login', input);
+                const { token, name } = response.data;
+                guardarEnLocalStorage({ key: 'token', value: { token } })
+                alert('bienvenido' + name);
+                //El push redirecciona a la pantalla indicada en el parametro.
+                history.push('/admin');
+            }
 
-            const response = await axios.post('http://localhost:4000/api/auth/login', input);
-            console.log (response)
+            catch (error) {
+                console.error(error);
+                if (error.response.data) {
+                    alert(JSON.stringify(error.response.data));
+                } else {
+                    alert('error de conexion')
+                }
+            }
 
-            // if () {
-            //     alert('Hola Admin' + user.name)
+
+
 
 
 
@@ -46,9 +58,7 @@ export default function Login({ setUser }) {
             //     history.push('/admin');
             // } else {
             //     alert('datos incorrectos')
-            //     form.reset();
-            //     // seteamos el input con un campo vacio, entonces debemos agregar que el valor del input dependa del estado 
-            //     setInput({});
+
             // }
 
         }
