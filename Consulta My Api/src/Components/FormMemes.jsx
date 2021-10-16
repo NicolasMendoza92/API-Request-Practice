@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Button, Form, InputGroup, Row, Spinner } from 'react-bootstrap';
+import { leerDeLocalStorage } from '../utils/localStorage';
+
 
 
 export default function FormMemes(setMemes) {
@@ -30,8 +32,10 @@ export default function FormMemes(setMemes) {
         if (form.checkValidity() === true) {
             // antes de hacer la consulta, se llama al setloading
             setIsLoading(true);
+            const tokenLocal = leerDeLocalStorage('token') || {};
+            const headers = {'x-auth-token': tokenLocal.token };
             // hacemos un post a la ruta y lo que necestiamos es el titulo y la imagen, que es lo que tenemos guardado en el input (lo que user pone ahi)
-            await axios.post(' http://localhost:4000/api/memes', input);
+            await axios.post(' http://localhost:4000/api/memes', input , {headers});
 
             // aca tambien, a la hora de crear un meme con post, tambien consultamos con get y lo setea al estado. 
             const response = await axios.get('http://localhost:4000/api/memes');
