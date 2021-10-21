@@ -6,7 +6,7 @@ import { guardarEnLocalStorage } from '../utils/localStorage';
 import { useHistory } from 'react-router';
 
 // al tener el setUser, lo podemos desectructurar 
-export default function Login() {
+export default function Login({requestUserData}) {
 
     const [validated, setValidated] = useState(false);
     // aca debo elegir los parametros que va a tener la funcion y su estado incial es email y password vacios  
@@ -35,6 +35,7 @@ export default function Login() {
                 const { token, name } = response.data;
                 guardarEnLocalStorage({ key: 'token', value: { token } })
                 alert('bienvenido' + name);
+                await requestUserData();
                 //El push redirecciona a la pantalla indicada en el parametro.
                 history.push('/admin');
             }
@@ -47,20 +48,6 @@ export default function Login() {
                     alert('error de conexion')
                 }
             }
-
-
-
-
-
-
-            //     // setUser(user);
-            //     // guardarEnLocalStorage({ key: 'user', value: user });
-            //     history.push('/admin');
-            // } else {
-            //     alert('datos incorrectos')
-
-            // }
-
         }
     };
 

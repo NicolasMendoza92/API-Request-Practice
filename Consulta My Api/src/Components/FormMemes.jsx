@@ -6,7 +6,8 @@ import { leerDeLocalStorage } from '../utils/localStorage';
 
 
 
-export default function FormMemes(setMemes) {
+export default function FormMemes(props) {
+    const { setMemes } = props;
     const [validated, setValidated] = useState(false);
     // ahora usamos estados para tomar la informacion del usuario -  antes lo usabamos con onChange
     const [input, setInput] = useState({ title: '', image: '' });
@@ -32,9 +33,11 @@ export default function FormMemes(setMemes) {
         if (form.checkValidity() === true) {
             // antes de hacer la consulta, se llama al setloading
             setIsLoading(true);
+    
             const tokenLocal = leerDeLocalStorage('token') || {};
+            // con esta linea verificamos si el user esta logeado 
             const headers = {'x-auth-token': tokenLocal.token };
-            // hacemos un post a la ruta y lo que necestiamos es el titulo y la imagen, que es lo que tenemos guardado en el input (lo que user pone ahi)
+            // hacemos un post a la ruta y lo que necestiamos es el titulo y la imagen, que es lo que tenemos guardado en el input (lo que user pone ahi) - tenemos los dos parametros, header e input 
             await axios.post(' http://localhost:4000/api/memes', input , {headers});
 
             // aca tambien, a la hora de crear un meme con post, tambien consultamos con get y lo setea al estado. 
@@ -81,7 +84,7 @@ export default function FormMemes(setMemes) {
                     </InputGroup>
                 </Form.Group>
                 <Row>
-                    <Button type="submit" className="mx-auto" disable={isLoading}>
+                    <Button type="submit" className="mx-auto">
                         Crear Meme
                         {/* cuando hacemos el envio del meme, debe aparecer el spinner */}
                         {isLoading && (

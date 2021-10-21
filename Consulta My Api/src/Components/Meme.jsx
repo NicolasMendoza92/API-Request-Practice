@@ -12,9 +12,9 @@ export default function Meme(props) {
             <Card.Body>
                 <Card.Title className="text-center">{props.meme.title}</Card.Title>
                 {/* el signo de pregunta es como una facilidad que me da react, solo aparece cuando existe, eso solo se puede utilizar en obejetos */}
-                {props.meme.creador && <span> Creador: {props.meme.creador?.name} </span>}
+                {<props className="meme creater"></props> && <span> Creador: {props.meme.creater?.name} </span>}
             </Card.Body>
-            <Button as={Link} to={`/meme/${props.meme.id}`}>Ver Detalle</Button>
+            <Button as={Link} to={`/meme/${props.meme._id}`}>Ver Detalle</Button>
         </Card>
     )
 }

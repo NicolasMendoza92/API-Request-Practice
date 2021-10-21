@@ -1,16 +1,21 @@
 
 import {Button } from "react-bootstrap";
+import { useHistory } from "react-router";
+import { leerDeLocalStorage } from "../utils/localStorage";
 
 
 const exampleImage = 'https://png.pngtree.com/png-vector/20190710/ourmid/pngtree-user-vector-avatar-png-image_1541962.jpg'
 
 
-export default function Perfil({ onChangeImg , user, setUser}) {
+export default function Perfil({ onChangeImg , user}) {
+    const tokenLocal = leerDeLocalStorage('token') || {};
 
+    const history = useHistory ();
 
     const logOut = () => {
-        setUser({});
-        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.reload();
+        history.push('/login');
     };
 
     return (
@@ -37,9 +42,10 @@ export default function Perfil({ onChangeImg , user, setUser}) {
                 <p>Nombre: {user.name}</p>
             </div>
             <div className="d-flex justify-content-center mx-auto">
-                <Button onClick={logOut} className="mx-auto btn-secondary mt-4">
+                {/* si hay token logeado entonces aparece este boton de cerrar sesion */}
+               {tokenLocal.token && <Button onClick={logOut} className="mx-auto btn-secondary mt-4">
                     Cerrar Sesion
-                </Button>
+                </Button>}
             </div>
         </div>
 

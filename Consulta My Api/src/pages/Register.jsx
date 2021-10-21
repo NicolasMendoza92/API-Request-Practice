@@ -1,33 +1,28 @@
-
-import axios from 'axios';
-import React from 'react'
 import { useState } from 'react';
+import axios from 'axios';
 import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 
 export default function Register() {
 
-
     const [input, setInput] = useState({ name: '', email: '', password: '' });
-    const history = useHistory ();
+    const history = useHistory();
 
     const handleChange = (e) => {
         const { value, name } = e.target;
         const newInput = { ...input, [name]: value };
-        setInput(newInput)
-
+        setInput(newInput);
     }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:4000/api/auth/register', input);
-            alert('registro con exito');
-            // aca hacemos un cambio de ruta con el history.push
-            history.push('/login')
+            alert('Registro exitoso');
+            history.push('/login');
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-
     }
 
     return (
@@ -39,39 +34,41 @@ export default function Register() {
                         <Form.Group as={Col} md="4" controlId="validationCustom01">
                             <Form.Label>Name</Form.Label>
                             <Form.Control
-                                name="name"
-                                required
-                                type="text"
-                                onChange={(e) => handleChange(e)}
-                                placeholder="Name"
+                              name="name"
+                              onChange={(e) => handleChange(e)}
+                              required
+                              type="text"
+                              placeholder="Nombre"
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId="validationCustom02">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
-                                name="email"
-                                required
-                                type="email"
-                                onChange={(e) => handleChange(e)}
-                                placeholder="Correo Electronico"
+                                  name="email"
+                                  onChange={(e) => handleChange(e)}
+                                  required
+                                  type="text"
+                                  placeholder="email"
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId="validationCustomUsername">
                             <Form.Label>Password</Form.Label>
                             <InputGroup hasValidation>
                                 <Form.Control
-                                    name="password"
-                                    required
-                                    type="password"
-                                    placeholder="Contraseña"
-                                    aria-describedby="inputGroupPrepend"
+                                     minLength="6"
+                                     name="password"
+                                     onChange={(e) => handleChange(e)}
+                                     type="password"
+                                     placeholder="****"
+                                     aria-describedby="inputGroupPrepend"
+                                     required
                                 />
                             </InputGroup>
                         </Form.Group>
                     </Row>
                     <Row>
                         {/* boton que llama a la funcion HandleSubmit */}
-                        <Button type="submit">Submit form</Button>
+                        <Button type="submit">Registrar</Button>
                     </Row>
                     <Row>
                         <Link to="/login">Ya tienes cuenta?</Link>
