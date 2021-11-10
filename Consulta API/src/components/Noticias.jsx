@@ -75,7 +75,10 @@ export default function Noticias() {
     const changeCountry = (event) => {
         setCountry(event.target.value)
     };
+
+    // vbles definidas para el renderizado condicional 
     const previusDisabled = page === 1;
+    // noticias es el array que tiene los objetos y con length veo la cantidad
     const nextDisabled = noticias.length === 0;
 
 
