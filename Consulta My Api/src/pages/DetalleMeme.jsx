@@ -14,8 +14,7 @@ export default function DetalleMeme(props) {
     const memeEncontrado = props.memes.find(( _id ) => _id === memeId);
 
     if (memeEncontrado === undefined) {
-        return <Redirect to="/404" />;
-        
+        return <Redirect to="/404" />;     
     }
 
     return (

@@ -3,16 +3,21 @@ import { useState } from 'react';
 import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
 import axios from 'axios'
 import { guardarEnLocalStorage } from '../utils/localStorage';
+import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router';
 
 // al tener el setUser, lo podemos desectructurar 
-export default function Login({requestUserData}) {
+export default function Login({ requestUserData }) {
 
     const [validated, setValidated] = useState(false);
     // aca debo elegir los parametros que va a tener la funcion y su estado incial es email y password vacios  
     const [input, setInput] = useState({ email: '', password: '' });
     // el useHistory, me sirve como un redirect, y luego lo invoco este estado con un history.push (y /"ruta que quiero")
     const history = useHistory();
+
+    const responseGoogle = (response)=>{
+        console.log(response)
+    }
 
     const handleChange = (event) => {
         const { value, name } = event.target;
@@ -91,10 +96,19 @@ export default function Login({requestUserData}) {
                                         </Form.Control.Feedback>
                                     </InputGroup>
                                 </Form.Group>
-                                <Row>
+                                <Row className='mb-2'>
                                     <Button type="submit" className="mx-auto mt-4">
                                         Iniciar Sesión
                                     </Button>
+                                </Row>
+                                <Row>
+                                    <GoogleLogin
+                                        clientId={process.env.cliente_id}
+                                        buttonText="Login"
+                                        onSuccess={responseGoogle}
+                                        onFailure={responseGoogle}
+                                        cookiePolicy={'single_host_origin'}
+                                    />
                                 </Row>
                             </Form>
                         </Card.Body>
